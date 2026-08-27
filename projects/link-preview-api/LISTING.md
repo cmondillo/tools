@@ -30,19 +30,41 @@ is the opposite of the point of this project.
 
 ## Listed so far
 
+- **x402scan.com** — done. Registered via https://www.x402scan.com/resources/register;
+  `/preview` recognized as a valid x402 resource. Free, no wallet, no
+  review queue.
 - **[`xpaysh/awesome-x402`](https://github.com/xpaysh/awesome-x402)** —
   submitted as [PR #1343](https://github.com/xpaysh/awesome-x402/pull/1343),
   status: open, awaiting maintainer merge. Free, no wallet needed.
+- **[`Merit-Systems/awesome-agentic-commerce`](https://github.com/Merit-Systems/awesome-agentic-commerce)**
+  (published under the name `awesome-x402`) — submitted as
+  [PR #630](https://github.com/Merit-Systems/awesome-agentic-commerce/pull/630),
+  status: open, awaiting maintainer merge.
 - **x402 Bazaar (CDP auto-index)** — should be automatic since we're on the
   CDP facilitator; not independently confirmed (every domain to check it is
   blocked in the dev sandbox this project was built in — verify from a
-  normal browser).
+  normal browser). Docs: https://docs.cdp.coinbase.com/x402/bazaar — public
+  directory: Agentic.Market.
 - **x402-list.com** — not submitted. Would cost a one-time $1 USDC because
   the API is hosted on a free-tier host (onrender.com is on their listed
-  free-host set); revisit if/when off the free tier.
+  free-host set); revisit if/when off the free tier. Automated and ready
+  to go whenever: `scripts/publish_x402list.py` at the repo root (see
+  `PUBLISHING.md`).
 - **x402bazaar.org manual listing** — attempted, blocked by a signature bug
   on their own site (their platform-created wallet fails to sign even its
-  own listing flow); not something fixable from our side.
+  own listing flow); not something fixable from our side. Not the same
+  thing as Coinbase's actual Bazaar (above) — a separate, unrelated,
+  broken third-party site.
+- **x402Studio / x402layer.cc** — evaluated, deliberately skipped. It's a
+  payment-collecting *proxy*: it wants to sit in front of an unprotected
+  origin and handle x402 itself, which conflicts with this API already
+  having its own CDP-facilitator payment gate (pointing it at the live
+  paid endpoint would double-charge / break, since the proxy forwards
+  requests unpaid and our own gate would then reject them). Also a
+  brand-new platform with no track record, unlike the channels above. To
+  revisit: would need a second, API-key-protected *unpaid* variant of the
+  endpoint built specifically for their proxy to call (Origin Protection
+  toggle in their UI) — real engineering work, not just a form fill.
 
 ## Listing copy
 
