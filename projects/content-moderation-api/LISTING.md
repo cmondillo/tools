@@ -61,9 +61,18 @@ Content-Type: application/json
 
 ## Listed so far
 
-Nothing yet — not deployed. Once live, follow the exact same playbook as
-`link-preview-api` (see `/PUBLISHING.md` at the repo root): x402 Bazaar is
-automatic via the CDP facilitator pattern already wired into `payment.py`;
-`scripts/publish_x402list.py` handles x402-list.com in one command;
-x402scan.com and the community GitHub lists are the same few-minutes-manual
-steps as before.
+- **x402-list.com** — submitted, status `pending` (awaiting review/probe).
+  Submission ID `72bd602f-b1b5-4e74-b3d8-e397745a8df7`. Paid the $1
+  free-host submission fee autonomously via [Poncho](https://tryponcho.com/)
+  (tx `0xaa99039128cf3363b80465a9fcc2e6f4ec00966683caabfe7e4b01abb5587a01`
+  on Base) — a genuine third-party agent paying a genuine third-party
+  service to list this API, no manual clicking on either end.
+- **x402scan.com** — not yet submitted for this project.
+- **x402 Bazaar (CDP auto-index)** — should be automatic since we're on
+  the CDP facilitator; not independently verified.
+- **GitHub awesome-lists** — PRs open on both:
+  - [xpaysh/awesome-x402 #1344](https://github.com/xpaysh/awesome-x402/pull/1344) —
+    open, no conflicts, awaiting maintainer merge.
+  - [Merit-Systems/awesome-agentic-commerce #631](https://github.com/Merit-Systems/awesome-agentic-commerce/pull/631) —
+    open, blocked on a required reviewer approval (repo rule, not
+    something we can do ourselves).
