@@ -62,11 +62,14 @@ form.
 api/                   the paid service (FastAPI)
   app/
     main.py             routes + the x402 middleware wiring
+    mcp_server.py        the same product, sold over MCP instead of HTTP - mounted
+                          on this same deployment at /mcp (see "Run it locally")
     payment.py           price/network/payee config + Bazaar discovery declaration
     preview.py            the actual product: fetch a URL, parse its metadata (SSRF-hardened)
     config.py            all settings, read from env vars
-  tests/                 16 tests: unit, API-level, and one full mocked-facilitator
-                          integration test that exercises real payment signing end to end
+  tests/                 17 tests: unit, API-level, MCP-level, and one full
+                          mocked-facilitator integration test that exercises
+                          real payment signing end to end
   Dockerfile
   .env.example           every setting, documented
 automation-client/     a sample autonomous agent that discovers, pays for,
@@ -89,6 +92,13 @@ uvicorn app.main:app --reload
 - `GET /preview?url=...` is the paid route. Hitting it with no payment
   returns `402` with a price quote; see `automation-client/` for a client
   that pays it automatically.
+- The MCP tool is mounted on this same app at `POST /mcp` (streamable HTTP)
+  - no separate service or install step for an MCP client to point at. It's
+  also runnable standalone over stdio: `python -m app.mcp_server` (needs
+  `CDP_API_KEY_ID`/`CDP_API_KEY_SECRET` set to actually initialize against a
+  real facilitator, same as the HTTP app). If the facilitator happens to be
+  unreachable at startup, `/mcp` is skipped for that run rather than
+  crashing the app - `/preview` keeps working as normal.
 
 Run the tests:
 
@@ -97,7 +107,7 @@ cd api
 pytest
 ```
 
-All 16 tests run fully offline (the facilitator's HTTP calls are mocked
+All 17 tests run fully offline (the facilitator's HTTP calls are mocked
 with [respx](https://lundberg.github.io/respx/)) — including one that runs
 the *actual* sample agent against the *actual* FastAPI app over an in-process
 ASGI transport, with a real (test) wallet really signing a real EIP-3009
