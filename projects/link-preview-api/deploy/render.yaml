@@ -1,0 +1,20 @@
+# Render Blueprint. In the Render dashboard: New -> Blueprint -> point at
+# this repo -> it finds this file automatically.
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: link-preview-api
+    runtime: docker
+    dockerfilePath: ./api/Dockerfile
+    dockerContext: ./api
+    plan: starter
+    healthCheckPath: /healthz
+    envVars:
+      - key: X402_PAY_TO_ADDRESS
+        sync: false # set this in the Render dashboard to your real payout wallet
+      - key: X402_PRICE_USD
+        value: "$0.01"
+      - key: X402_NETWORK
+        value: eip155:84532 # switch to eip155:8453 (Base mainnet) to go live for real
+      - key: X402_FACILITATOR_URL
+        value: https://x402.org/facilitator
