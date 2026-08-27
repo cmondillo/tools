@@ -61,6 +61,10 @@ Content-Type: application/json
 
 ## Listed so far
 
+- **[MCP Registry](https://registry.modelcontextprotocol.io/)** — published,
+  `status: active`. `io.github.cmondillo/content-moderation-api`, remote
+  streamable-HTTP entry at `/mcp` on the live deployment (no local install
+  needed). Verified via `GET /v0.1/servers?search=io.github.cmondillo`.
 - **x402-list.com** — submitted, status `pending` (awaiting review/probe).
   Submission ID `72bd602f-b1b5-4e74-b3d8-e397745a8df7`. Paid the $1
   free-host submission fee autonomously via [Poncho](https://tryponcho.com/)

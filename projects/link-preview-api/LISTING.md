@@ -30,6 +30,10 @@ is the opposite of the point of this project.
 
 ## Listed so far
 
+- **[MCP Registry](https://registry.modelcontextprotocol.io/)** — published,
+  `status: active`. `io.github.cmondillo/link-preview-api`, remote
+  streamable-HTTP entry at `/mcp` on the live deployment (no local install
+  needed). Verified via `GET /v0.1/servers?search=io.github.cmondillo`.
 - **[x402scan.com](https://www.x402scan.com/server/4f84a447-770a-454c-835d-8392e9b4e8c4)**
   — done, confirmed live (not just submitted): all 4 resources correctly
   indexed, `/`, `/favicon.ico`, `/healthz` correctly marked Public (free)
