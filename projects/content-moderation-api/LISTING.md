@@ -67,13 +67,17 @@ Content-Type: application/json
   (tx `0xaa99039128cf3363b80465a9fcc2e6f4ec00966683caabfe7e4b01abb5587a01`
   on Base) — a genuine third-party agent paying a genuine third-party
   service to list this API, no manual clicking on either end.
-- **x402scan.com** — listed: https://www.x402scan.com/server/ad47f50a-62d1-4400-bf43-99517852cb0e.
-  Test call made and confirmed working correctly (flagged "bullshit",
-  left milder words like "hell"/"damn"/"crap" alone — matches the
-  wordlist's deliberately conservative scope). Activity/transaction
-  feed on the listing page may lag behind real calls by a while, same
-  as observed with `link-preview-api` early on — not necessarily a
-  problem.
+- **x402scan.com** — listed and confirmed correct:
+  https://www.x402scan.com/server/ad47f50a-62d1-4400-bf43-99517852cb0e.
+  Name, icon, description, wallet address, and all 4 resources (`GET /`,
+  `/favicon.ico`, `/healthz`, `POST /moderate` priced `<$0.01`) all show
+  up right. Test call made and confirmed working correctly (flagged
+  "bullshit", left milder words like "hell"/"damn"/"crap" alone —
+  matches the wordlist's deliberately conservative scope). The
+  Activity panel (Transactions/Volume/Buyers) still reads 0 — that's a
+  separate indexer that lags real settlements, same as observed with
+  `link-preview-api` early on; not a problem with the listing or the
+  API.
 - **x402 Bazaar (CDP auto-index)** — should be automatic since we're on
   the CDP facilitator; not independently verified.
 - **GitHub awesome-lists** — PRs open on both:
