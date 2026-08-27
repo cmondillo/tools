@@ -1,0 +1,10 @@
+httpx>=0.27
+# Only needed if you ever pass --private-key --pay (real payment signing).
+# A dry run (the default, no --pay) doesn't import these at all.
+x402[evm,httpx]>=0.4
+eth-account>=0.13
+
+# dev/test only
+pytest>=8
+pytest-asyncio>=0.24
+respx>=0.21

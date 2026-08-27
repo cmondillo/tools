@@ -30,8 +30,8 @@ and follows the same pattern:
 ## Repo conventions
 
 - Every project is fully self-contained in `projects/<project-slug>/`: its
-  own code, tests, Dockerfile, deploy config, and README. Nothing is shared
-  between projects and nothing project-specific lives at the repo root.
+  own code, tests, Dockerfile, deploy config, and README. Nothing
+  product-specific is shared between projects.
 - Every project ships with:
   - `api/` — the paid service itself
   - `automation-client/` — a sample agent that pays for and consumes it
@@ -41,3 +41,9 @@ and follows the same pattern:
   - `LISTING.md` — the marketplace/directory listing copy, ready to publish
 - New projects get added the same way: a clean new folder, same skeleton,
   linked in the table above.
+- One deliberate exception to "nothing shared": [`scripts/`](scripts/) holds
+  portfolio-level *publishing* tooling — not product code, reused across
+  every project the same way (e.g. submitting a new tool to x402-list.com's
+  API). See [`PUBLISHING.md`](PUBLISHING.md) for the full playbook: what's
+  genuinely automatic, what's scripted, and what stays a deliberate manual
+  step and why.
