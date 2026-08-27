@@ -101,9 +101,15 @@ real FastAPI app.
 
 ## Status
 
-Built, tested (20/20, including the full paid-flow integration test),
-**not yet deployed**. Same next steps as `link-preview-api` had: deploy
-via `deploy/render.yaml` on Render's free tier, set `X402_PAY_TO_ADDRESS`,
-switch to CDP facilitator + Base mainnet when ready for real money — see
-`link-preview-api/README.md`'s "Status" section for the detailed walkthrough
-of each of those steps; the mechanics are identical here.
+1. ~~Deploy it somewhere public.~~ **Done.** Live on Render's free tier:
+   **https://content-moderation-api-hhy1.onrender.com** — verified: `/`
+   correctly reports the real wallet and price.
+2. **Switch to mainnet.** Same CDP account/API key as `link-preview-api` —
+   no new signup needed, CDP credentials aren't tied to one service. Add
+   `CDP_API_KEY_ID`/`CDP_API_KEY_SECRET` in Render, set
+   `X402_NETWORK=eip155:8453`.
+3. **Get it in front of agents.** See `LISTING.md` and the repo-root
+   `PUBLISHING.md` playbook.
+
+Currently live on **Base Sepolia testnet** (fake money, safe default) —
+what every test in this repo exercises.

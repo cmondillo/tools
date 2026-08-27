@@ -30,7 +30,7 @@ and follows the same pattern:
 | Project | What it sells | Status |
 |---|---|---|
 | [`link-preview-api`](projects/link-preview-api/) | Pay-per-call URL metadata (Open Graph/title/description/image) extraction | **Live on Base mainnet, earning real USDC**: https://link-preview-api-z4nf.onrender.com |
-| [`content-moderation-api`](projects/content-moderation-api/) | Pay-per-call profanity/explicit-content detection with redaction, sold over both HTTP and MCP | Built, tested (20/20), not yet deployed |
+| [`content-moderation-api`](projects/content-moderation-api/) | Pay-per-call profanity/explicit-content detection with redaction, sold over both HTTP and MCP | **Live**: https://content-moderation-api-hhy1.onrender.com (testnet pricing — mainnet switch pending) |
 
 ## Repo conventions
 

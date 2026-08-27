@@ -1,7 +1,8 @@
 # Marketplace listing — Content Moderation API
 
-Copy-paste ready content for wherever this gets listed. Not deployed yet —
-fill in `<DEPLOYED_URL>` once live (see README.md "Status").
+Copy-paste ready content for wherever this gets listed. Live at
+`https://content-moderation-api-hhy1.onrender.com` (Base Sepolia testnet
+pricing until mainnet is switched on — see README.md "Status").
 
 ## Listing copy
 
@@ -22,12 +23,12 @@ version back. $0.005 per call, paid in USDC, no signup.
 > learning classifier — no context or sarcasm understanding, only catches
 > terms on its list. Sold over both raw HTTP and MCP.
 
-**Endpoint:** `POST <DEPLOYED_URL>/moderate` — body `{"text": "..."}`
+**Endpoint:** `POST https://content-moderation-api-hhy1.onrender.com/moderate` — body `{"text": "..."}`
 
 **Price:** $0.005 USD per successful call, settled in USDC
 
-**Network:** Base mainnet (`eip155:8453`) once deployed and switched over
-(currently defaults to Base Sepolia testnet)
+**Network:** Base Sepolia testnet currently (`eip155:84532`) — mainnet
+switch pending, see README.md "Status"
 
 **Protocol:** [x402](https://www.x402.org/) — HTTP 402 Payment Required,
 also available as an MCP tool (`moderate_text`)
@@ -36,7 +37,7 @@ also available as an MCP tool (`moderate_text`)
 
 **Example request:**
 ```
-POST <DEPLOYED_URL>/moderate
+POST https://content-moderation-api-hhy1.onrender.com/moderate
 Content-Type: application/json
 
 {"text": "You are a bitch and an asshole."}
@@ -55,7 +56,7 @@ Content-Type: application/json
 }
 ```
 
-**Docs:** `<DEPLOYED_URL>/docs` (auto-generated OpenAPI/Swagger UI)
+**Docs:** `https://content-moderation-api-hhy1.onrender.com/docs` (auto-generated OpenAPI/Swagger UI)
 
 **Source:** this repository
 
