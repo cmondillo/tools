@@ -6,8 +6,10 @@ services:
   - type: web
     name: link-preview-api
     runtime: docker
-    dockerfilePath: ./api/Dockerfile
-    dockerContext: ./api
+    # Render resolves these two paths relative to the REPO ROOT, not to this
+    # render.yaml's own folder - hence the full path from the repo root here.
+    dockerfilePath: ./projects/link-preview-api/api/Dockerfile
+    dockerContext: ./projects/link-preview-api/api
     # "free" = Render's no-cost web service tier: no billing info needed.
     # Trade-off: spins down after 15 min idle, ~50s cold start on the next
     # request. Fine to prove the API works; upgrade to "starter" ($7/mo)
