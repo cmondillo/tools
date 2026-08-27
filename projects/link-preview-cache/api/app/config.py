@@ -31,6 +31,7 @@ class Settings:
     max_response_bytes: int
     cache_db_path: str
     cache_ttl_seconds: float
+    admin_token: str | None
 
     @property
     def use_cdp_facilitator(self) -> bool:
@@ -71,4 +72,8 @@ def get_settings() -> Settings:
         # that a page's OG metadata (title/image edits, etc.) doesn't go
         # stale for long if it changes.
         cache_ttl_seconds=float(os.environ.get("CACHE_TTL_SECONDS", str(6 * 3600))),
+        # Bearer token for the /admin/cache routes (manual insert/inspect/
+        # delete - see main.py). Unset by default: those routes then answer
+        # 503 rather than silently accepting an empty/blank token as valid.
+        admin_token=os.environ.get("ADMIN_TOKEN") or None,
     )

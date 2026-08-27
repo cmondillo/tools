@@ -25,3 +25,5 @@ services:
         value: ./data/cache.db
       - key: CACHE_TTL_SECONDS
         value: "21600"
+      - key: ADMIN_TOKEN
+        sync: false # set this yourself (e.g. `openssl rand -hex 32`) to enable /admin/cache

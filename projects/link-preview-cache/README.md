@@ -55,6 +55,26 @@ URLs that are "the same page" but differ in a trailing slash or query
 param order won't share a cache hit. Stated plainly here rather than
 implying smarter canonicalization than actually exists.
 
+## Manually seeding the cache
+
+Some sites (Coinbase, Dexscreener, and others) return `403` to any
+scraper — there's no legitimate way for `preview.py`'s fetch to ever
+populate them, no matter how well-behaved it is. `POST/GET/DELETE
+/admin/cache` lets the operator insert, inspect, or remove an entry by
+hand instead, so a paying agent asking about one of those URLs still gets
+a real answer:
+
+```
+POST /admin/cache
+Authorization: Bearer <ADMIN_TOKEN>
+{"url": "https://coinbase.com", "title": "Coinbase", "description": "..."}
+```
+
+Not x402 - protected by a fixed bearer token (`ADMIN_TOKEN` env var,
+unset by default, which disables these routes entirely - a 503, not an
+open door). Hidden from `/docs`; not part of the public product surface.
+See `.env.example` for how to set one.
+
 ## How it's sold: x402 (same mechanism as the other two projects)
 
 1. Agent calls `GET /preview?url=...` with no payment.
@@ -82,10 +102,11 @@ api/
     preview.py            fetch + parse a URL (SSRF-hardened; ported, not imported
                            cross-project, per this repo's self-containment convention)
     cache.py               the actual product idea: SQLite TTL cache in front of preview.py
-  tests/                 34 tests: cache logic, preview parsing/SSRF, payment
-                          config, API-level, MCP-level, and one full mocked-
-                          facilitator integration test that proves the second
-                          call for the same URL hits cache (not a second fetch)
+  tests/                 40 tests: cache logic, manual admin/cache seeding,
+                          preview parsing/SSRF, payment config, API-level,
+                          MCP-level, and one full mocked-facilitator
+                          integration test that proves the second call for
+                          the same URL hits cache (not a second fetch)
   Dockerfile
   .env.example
 automation-client/      sample agent that calls the SAME url twice, showing
@@ -113,7 +134,7 @@ uvicorn app.main:app --reload
 - `GET /preview?url=...` is the paid route.
 - MCP: `POST /mcp` on this same app, or standalone: `python -m app.mcp_server`.
 
-Run the tests: `cd api && pytest` — all 34 run fully offline (facilitator
+Run the tests: `cd api && pytest` — all 40 run fully offline (facilitator
 mocked with respx), including the full end-to-end test with a real (test)
 wallet really signing a real EIP-3009 payment authorization, that also
 proves the origin site gets fetched exactly once across two calls for the

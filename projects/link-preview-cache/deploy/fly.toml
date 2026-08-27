@@ -12,8 +12,9 @@ primary_region = "iad"
   X402_FACILITATOR_URL = "https://x402.org/facilitator"
   CACHE_DB_PATH = "./data/cache.db"
   CACHE_TTL_SECONDS = "21600"
-  # X402_PAY_TO_ADDRESS is a secret, not an env var here:
+  # X402_PAY_TO_ADDRESS and ADMIN_TOKEN are secrets, not env vars here:
   # fly secrets set X402_PAY_TO_ADDRESS=0xYourRealWallet
+  # fly secrets set ADMIN_TOKEN=$(openssl rand -hex 32)
 
 [http_service]
   internal_port = 8000

@@ -6,13 +6,15 @@ mount pattern already proven there and in content-moderation-api.
 from __future__ import annotations
 
 import logging
+import secrets
 from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 
 import httpx
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
+from pydantic import BaseModel, Field
 
 from x402.http.middleware.fastapi import payment_middleware
 
@@ -26,6 +28,33 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("link_preview_cache_api")
 
 _FAVICON_BYTES = (Path(__file__).parent / "favicon.png").read_bytes()
+
+
+class AdminCacheEntry(BaseModel):
+    """Same shape as preview.LinkPreview.to_dict() minus 'final_url' (which
+    only makes sense for a real fetch that followed redirects) - a manual
+    entry has nothing to redirect from."""
+
+    url: str = Field(..., description="Cache key - must match exactly what agents pass as ?url=.")
+    title: str | None = None
+    description: str | None = None
+    image: str | None = None
+    favicon: str | None = None
+    site_name: str | None = None
+    canonical_url: str | None = None
+    content_type: str | None = "text/html"
+
+
+def _check_admin_token(settings: Settings, authorization: str | None) -> None:
+    """Every /admin/cache route calls this first. Not x402 - a fixed bearer
+    token via ADMIN_TOKEN, since this is for the operator seeding/fixing
+    entries by hand (e.g. sites that 403 scrapers - see README), not
+    something agents are meant to call."""
+    if not settings.admin_token:
+        raise HTTPException(503, "Admin routes are not configured (ADMIN_TOKEN unset).")
+    provided = (authorization or "").removeprefix("Bearer ").strip()
+    if not provided or not secrets.compare_digest(provided, settings.admin_token):
+        raise HTTPException(401, "Missing or invalid admin bearer token.")
 
 
 async def _get_preview(settings: Settings, url: str) -> tuple[dict, bool]:
@@ -136,6 +165,44 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/cache-stats", tags=["meta"], openapi_extra={"security": []})
     async def cache_stats() -> dict:
         return cache.stats(settings.cache_db_path)
+
+    # Admin-only, bearer-token protected (not x402): let the operator seed
+    # or fix a cache entry by hand - e.g. sites that return 403 to any
+    # scraper (Coinbase, Dexscreener - see README) can never be served by
+    # the normal fetch path, but the data can still be entered manually so
+    # agents asking about that URL get a real answer instead of an error.
+    # Hidden from /docs (include_in_schema=False): not part of the public
+    # product surface, no reason to advertise it to casual API browsers.
+    @app.post("/admin/cache", tags=["admin"], include_in_schema=False)
+    async def admin_set_cache(
+        entry: AdminCacheEntry, authorization: str | None = Header(default=None)
+    ) -> dict:
+        _check_admin_token(settings, authorization)
+        data = entry.model_dump(exclude={"url"})
+        data["final_url"] = entry.url
+        cache.set(settings.cache_db_path, entry.url, data)
+        return {**data, "url": entry.url, "cached": True}
+
+    @app.get("/admin/cache", tags=["admin"], include_in_schema=False)
+    async def admin_get_cache(
+        url: str = Query(...), authorization: str | None = Header(default=None)
+    ) -> dict:
+        _check_admin_token(settings, authorization)
+        # Admin inspection ignores TTL - useful to see a stale-but-present
+        # entry without waiting for it to expire, unlike the paid /preview
+        # route which treats an expired entry as a miss.
+        data = cache.get(settings.cache_db_path, url, ttl_seconds=float("inf"))
+        if data is None:
+            raise HTTPException(404, "No cache entry for this URL.")
+        return data
+
+    @app.delete("/admin/cache", tags=["admin"], include_in_schema=False)
+    async def admin_delete_cache(
+        url: str = Query(...), authorization: str | None = Header(default=None)
+    ) -> dict:
+        _check_admin_token(settings, authorization)
+        removed = cache.delete(settings.cache_db_path, url)
+        return {"url": url, "removed": removed}
 
     @app.get("/preview", tags=["preview"])
     async def preview(

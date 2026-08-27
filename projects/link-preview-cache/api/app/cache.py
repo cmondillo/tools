@@ -77,6 +77,15 @@ def set(db_path: str, url: str, data: dict) -> None:
         )
 
 
+def delete(db_path: str, url: str) -> bool:
+    """Remove a cache entry. Returns True if something was actually
+    removed, False if there was no entry for that URL - used by the
+    admin-only DELETE /admin/cache route."""
+    with _cursor(db_path) as conn:
+        cur = conn.execute("DELETE FROM previews WHERE url = ?", (url,))
+        return cur.rowcount > 0
+
+
 def stats(db_path: str) -> dict:
     """Cheap visibility into cache size - used by the free /cache-stats route."""
     with _cursor(db_path) as conn:
