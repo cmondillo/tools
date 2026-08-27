@@ -40,14 +40,14 @@ also available as an MCP tool (`preview_url`)
   `status: active`. `io.github.cmondillo/link-preview-cache-api`, remote
   streamable-HTTP entry at `/mcp`. Verified via
   `GET /v0.1/servers?search=io.github.cmondillo`.
-- **GitHub awesome-lists** — branches pushed, PRs not yet opened (needs
-  the two-click submit from the compare links, same as before):
-  - `xpaysh/awesome-x402`: https://github.com/xpaysh/awesome-x402/compare/main...cmondillo:awesome-x402:add-link-preview-cache-api
-  - `Merit-Systems/awesome-agentic-commerce`: https://github.com/Merit-Systems/awesome-agentic-commerce/compare/master...cmondillo:awesome-agentic-commerce:add-link-preview-cache-api
+- **GitHub awesome-lists** — PRs open on both:
+  - [xpaysh/awesome-x402 #1349](https://github.com/xpaysh/awesome-x402/pull/1349) —
+    open, awaiting maintainer merge.
+  - [Merit-Systems/awesome-agentic-commerce #635](https://github.com/Merit-Systems/awesome-agentic-commerce/pull/635) —
+    open, awaiting maintainer merge.
+- **x402scan.com** — submitted.
 - **x402-list.com** — not submitted yet. Costs $1 USDC (free-host fee,
-  same as `content-moderation-api`); needs Poncho or similar to pay it.
-- **x402scan.com** — not submitted yet. Visit
-  https://www.x402scan.com/resources/register and paste the URL (a few
-  seconds, no wallet).
+  same as `content-moderation-api`); needs Poncho or similar to pay it -
+  on hold until there's USDC on that wallet again.
 - **x402 Bazaar (CDP auto-index)** — should be automatic since we're on
   the CDP facilitator; not independently verified.
