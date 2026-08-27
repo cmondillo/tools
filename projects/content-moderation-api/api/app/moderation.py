@@ -21,7 +21,10 @@ from functools import lru_cache
 from pathlib import Path
 
 _WORDLIST_PATH = Path(__file__).parent / "data" / "en_wordlist.txt"
-_MAX_TEXT_LENGTH = 5000  # ~403 compiled patterns run against the input twice (plain + leetspeak pass); cap input size so that stays cheap.
+_MAX_TEXT_LENGTH = 50_000  # ~403 compiled patterns run against the input twice (plain + leetspeak
+# pass). Benchmarked: ~0.3s at 50k chars, ~1.3s at 200k - 50k keeps a single
+# request well under a second so it doesn't stall the event loop, while
+# covering a full article/document, not just a short message.
 
 _LEET_MAP = str.maketrans(
     {"0": "o", "1": "i", "3": "e", "4": "a", "5": "s", "7": "t", "@": "a", "$": "s"}

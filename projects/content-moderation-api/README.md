@@ -70,7 +70,7 @@ api/
     data/
       en_wordlist.txt     403 terms (LDNOOBW, CC BY 4.0)
       NOTICE.md            attribution
-  tests/                 20 tests: unit (moderation logic), API-level, MCP-level,
+  tests/                 21 tests: unit (moderation logic), API-level, MCP-level,
                           and one full mocked-facilitator integration test with
                           real payment signing end to end
   Dockerfile
@@ -92,9 +92,15 @@ uvicorn app.main:app --reload
 
 - `GET /healthz`, `GET /`, `GET /favicon.ico` are free.
 - `POST /moderate` is the paid route.
-- MCP variant: `python -m app.mcp_server` (needs `CDP_API_KEY_ID`/`CDP_API_KEY_SECRET` set to actually initialize against a real facilitator, same as the HTTP app).
+- The MCP tool is mounted on this same app at `POST /mcp` (streamable HTTP) -
+  no separate service or install step for an MCP client to point at. It's
+  also runnable standalone over stdio: `python -m app.mcp_server` (needs
+  `CDP_API_KEY_ID`/`CDP_API_KEY_SECRET` set to actually initialize against a
+  real facilitator, same as the HTTP app). If the facilitator happens to be
+  unreachable at startup, `/mcp` is skipped for that run rather than
+  crashing the app - `/moderate` keeps working as normal.
 
-Run the tests: `cd api && pytest` — all 20 run fully offline (facilitator
+Run the tests: `cd api && pytest` — all 21 run fully offline (facilitator
 mocked with respx), including a full end-to-end test with a real (test)
 wallet really signing a real EIP-3009 payment authorization against the
 real FastAPI app.

@@ -59,9 +59,9 @@ def test_empty_text_is_rejected():
 
 def test_oversized_text_is_rejected():
     with pytest.raises(ModerationError):
-        moderate("a" * 5001)
+        moderate("a" * 50_001)
 
 
 def test_exactly_max_length_is_accepted():
-    result = moderate("a" * 5000)
+    result = moderate("a" * 50_000)
     assert result.flagged is False

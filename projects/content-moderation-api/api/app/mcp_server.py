@@ -12,6 +12,8 @@ from __future__ import annotations
 import logging
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
+from x402 import x402ResourceServer
 from x402.extensions.bazaar import (
     DeclareMcpDiscoveryConfig,
     OutputConfig,
@@ -29,11 +31,21 @@ logger = logging.getLogger("content_moderation_mcp")
 _TOOL_NAME = "moderate_text"
 
 
-def build_mcp_server(settings: Settings | None = None) -> FastMCP:
+def build_mcp_server(
+    settings: Settings | None = None,
+    resource_server: x402ResourceServer | None = None,
+) -> FastMCP:
+    """`resource_server` lets a caller that already built and initialized one
+    (main.py, mounting this alongside the HTTP app on the same deployment)
+    pass it in instead of paying for a second facilitator round-trip and
+    silently ignoring `sync_facilitator_on_start`. Standalone use (`python -m
+    app.mcp_server`) has no other resource_server to share, so it still
+    builds and eagerly initializes its own here."""
     settings = settings or get_settings()
 
-    resource_server = build_resource_server(settings)
-    resource_server.initialize()
+    if resource_server is None:
+        resource_server = build_resource_server(settings)
+        resource_server.initialize()
 
     accepts = resource_server.build_payment_requirements(
         ResourceConfig(
@@ -56,7 +68,7 @@ def build_mcp_server(settings: Settings | None = None) -> FastMCP:
                 "properties": {
                     "text": {
                         "type": "string",
-                        "description": "Text to check. Max 5000 characters.",
+                        "description": "Text to check. Max 50,000 characters.",
                     }
                 },
                 "required": ["text"],
@@ -66,7 +78,25 @@ def build_mcp_server(settings: Settings | None = None) -> FastMCP:
         )
     )
 
-    mcp = FastMCP(settings.app_name)
+    # streamable_http_path="/": when this server is mounted under /mcp in
+    # main.py (so it's reachable at the API's own public URL, not a separate
+    # deployment), FastMCP would otherwise register its route at /mcp too,
+    # landing at /mcp/mcp. Irrelevant for standalone stdio use (`python -m
+    # app.mcp_server`).
+    #
+    # transport_security: FastMCP defaults to DNS-rebinding protection with
+    # an allowed_hosts list of just localhost - meant for a server that's
+    # only supposed to be reachable from the same machine (e.g. a browser
+    # extension talking to a local process). This server is deliberately
+    # public at a real domain, so that default would 421 every real
+    # request. The actual trust boundary here is the x402 payment gate on
+    # every tool call, not the Host header, so disable it explicitly rather
+    # than hardcode/maintain a domain allowlist.
+    mcp = FastMCP(
+        settings.app_name,
+        streamable_http_path="/",
+        transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False),
+    )
     payment = create_payment_wrapper(resource_server, accepts=accepts, extensions=extensions)
 
     @mcp.tool(name=_TOOL_NAME)

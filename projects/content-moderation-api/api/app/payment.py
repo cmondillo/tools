@@ -48,7 +48,7 @@ def build_routes_config(settings: Settings) -> dict:
             "properties": {
                 "text": {
                     "type": "string",
-                    "description": "Text to check for profanity/explicit terms. Max 5000 characters.",
+                    "description": "Text to check for profanity/explicit terms. Max 50,000 characters.",
                 }
             },
             "required": ["text"],

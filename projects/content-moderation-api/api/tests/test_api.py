@@ -78,6 +78,25 @@ def test_moderate_requires_payment():
 
 
 @respx.mock
+def test_mcp_is_mounted_and_reachable():
+    respx.get(f"{_settings.facilitator_url}/supported").mock(
+        return_value=httpx.Response(200, json=_FACILITATOR_SUPPORTED)
+    )
+    # TestClient as a context manager runs the app's lifespan, which is
+    # what wires up the mounted MCP session manager - without it this
+    # would 500 instead of behaving like a real MCP endpoint.
+    with TestClient(create_app()) as client:
+        response = client.post(
+            "/mcp",
+            json={"jsonrpc": "2.0", "id": 1, "method": "ping"},
+            headers={"Accept": "application/json, text/event-stream"},
+        )
+    # Anything other than 404 confirms the route is actually mounted;
+    # the MCP session-handshake details are exercised in test_mcp_server.py.
+    assert response.status_code != 404
+
+
+@respx.mock
 def test_moderate_returns_clean_error_when_facilitator_is_unreachable():
     respx.get(f"{_settings.facilitator_url}/supported").mock(
         side_effect=httpx.ConnectError("connection refused")
