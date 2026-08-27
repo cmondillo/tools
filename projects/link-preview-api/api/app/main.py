@@ -17,11 +17,12 @@ need a clean one each time.
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 import httpx
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from x402.http.middleware.fastapi import payment_middleware
 
 from .config import Settings, get_settings
@@ -30,6 +31,13 @@ from .preview import PreviewError, fetch_preview
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("link_preview_api")
+
+_FAVICON_BYTES = (Path(__file__).parent / "favicon.png").read_bytes()
+
+# Contact address published in the public OpenAPI spec (info.contact.email) so
+# agent directories like x402scan can list a way to reach the operator. This is
+# a dedicated address chosen deliberately for that exposure, not a personal one.
+_CONTACT_EMAIL = "abstracttokengen@gmail.com"
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -54,6 +62,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "No API key, no signup — just pay and call."
         ),
         version="1.0.0",
+        contact={"name": settings.app_name, "email": _CONTACT_EMAIL},
     )
     app.state.settings = settings
 
@@ -82,11 +91,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 },
             )
 
-    @app.get("/healthz", tags=["meta"])
+    # openapi_extra security:[] marks these two as deliberately free (not
+    # x402-gated) in the OpenAPI spec itself, so a directory that probes for
+    # a 402 on every listed path (e.g. x402scan) treats them as free-by-design
+    # rather than flagging them as broken paid endpoints.
+    @app.get("/healthz", tags=["meta"], openapi_extra={"security": []})
     async def healthz() -> dict:
         return {"status": "ok"}
 
-    @app.get("/", tags=["meta"])
+    @app.get("/", tags=["meta"], openapi_extra={"security": []})
     async def root() -> dict:
         return {
             "name": settings.app_name,
@@ -97,6 +110,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "endpoint": "GET /preview?url=<public http(s) url>",
             "docs": "/docs",
         }
+
+    @app.get("/favicon.ico", tags=["meta"], openapi_extra={"security": []})
+    async def favicon() -> Response:
+        return Response(content=_FAVICON_BYTES, media_type="image/png")
 
     @app.get("/preview", tags=["preview"])
     async def preview(

@@ -41,6 +41,36 @@ def test_healthz_is_free():
     assert response.json() == {"status": "ok"}
 
 
+def test_favicon_is_free_and_is_a_png():
+    """Directories like x402scan probe for a real /favicon.ico; must be free
+    (not payment-gated) and an actual image, not a placeholder 200."""
+    client = TestClient(create_app())
+    response = client.get("/favicon.ico")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/png"
+    assert response.content.startswith(b"\x89PNG\r\n\x1a\n")
+
+
+def test_openapi_spec_declares_a_contact_email():
+    """x402scan flags listings with no way to reach the operator; the public
+    OpenAPI spec must carry one."""
+    client = TestClient(create_app())
+    response = client.get("/openapi.json")
+    assert response.status_code == 200
+    contact = response.json()["info"]["contact"]
+    assert contact["email"] == "abstracttokengen@gmail.com"
+
+
+def test_free_routes_declare_no_security_requirement():
+    """/healthz, /, and /favicon.ico must advertise security:[] in the OpenAPI
+    spec so a directory that probes every path for a 402 treats them as
+    free-by-design rather than flagging them as broken paid endpoints."""
+    client = TestClient(create_app())
+    spec = client.get("/openapi.json").json()
+    for path in ("/healthz", "/", "/favicon.ico"):
+        assert spec["paths"][path]["get"]["security"] == []
+
+
 def test_root_is_free_and_describes_pricing():
     client = TestClient(create_app())
     response = client.get("/")
