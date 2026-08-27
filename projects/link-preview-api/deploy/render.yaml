@@ -1,5 +1,6 @@
 # Render Blueprint. In the Render dashboard: New -> Blueprint -> point at
 # this repo -> it finds this file automatically.
+# Blueprint path to enter in the dashboard: projects/link-preview-api/deploy/render.yaml
 # Docs: https://render.com/docs/blueprint-spec
 services:
   - type: web
@@ -7,7 +8,11 @@ services:
     runtime: docker
     dockerfilePath: ./api/Dockerfile
     dockerContext: ./api
-    plan: starter
+    # "free" = Render's no-cost web service tier: no billing info needed.
+    # Trade-off: spins down after 15 min idle, ~50s cold start on the next
+    # request. Fine to prove the API works; upgrade to "starter" ($7/mo)
+    # once real traffic makes cold starts annoying for paying agents.
+    plan: free
     healthCheckPath: /healthz
     envVars:
       - key: X402_PAY_TO_ADDRESS
