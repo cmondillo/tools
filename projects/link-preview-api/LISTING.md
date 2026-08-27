@@ -30,9 +30,12 @@ is the opposite of the point of this project.
 
 ## Listed so far
 
-- **x402scan.com** — done. Registered via https://www.x402scan.com/resources/register;
-  `/preview` recognized as a valid x402 resource. Free, no wallet, no
-  review queue.
+- **[x402scan.com](https://www.x402scan.com/server/4f84a447-770a-454c-835d-8392e9b4e8c4)**
+  — done, confirmed live (not just submitted): all 4 resources correctly
+  indexed, `/`, `/favicon.ico`, `/healthz` correctly marked Public (free)
+  and `/preview` correctly priced at $0.01, favicon rendering, network
+  `eip155:8453`, wallet address correct, "v2" protocol badge. Free, no
+  wallet, no review queue.
 - **[`xpaysh/awesome-x402`](https://github.com/xpaysh/awesome-x402)** —
   submitted as [PR #1343](https://github.com/xpaysh/awesome-x402/pull/1343),
   status: open, awaiting maintainer merge. Free, no wallet needed.
