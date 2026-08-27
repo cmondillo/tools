@@ -25,9 +25,18 @@ class Settings:
     price_usd: str
     network: str
     facilitator_url: str
+    cdp_api_key_id: str | None
+    cdp_api_key_secret: str | None
     sync_facilitator_on_start: bool
     request_timeout: float
     max_response_bytes: int
+
+    @property
+    def use_cdp_facilitator(self) -> bool:
+        """True once both CDP credentials are set — see payment.py. The
+        CDP facilitator is required for Base mainnet + Bazaar auto-listing;
+        the plain facilitator_url (x402.org) is testnet-only."""
+        return bool(self.cdp_api_key_id and self.cdp_api_key_secret)
 
 
 def _env_bool(name: str, default: bool) -> bool:
@@ -49,6 +58,12 @@ def get_settings() -> Settings:
         facilitator_url=os.environ.get(
             "X402_FACILITATOR_URL", "https://x402.org/facilitator"
         ),
+        # If both are set, payment.py switches to the CDP facilitator
+        # instead of facilitator_url above (required for mainnet + Bazaar
+        # auto-listing). cdp-sdk itself also reads these two exact env var
+        # names, so setting them is enough - no other wiring needed.
+        cdp_api_key_id=os.environ.get("CDP_API_KEY_ID"),
+        cdp_api_key_secret=os.environ.get("CDP_API_KEY_SECRET"),
         # On by default (matches the x402 library default): the *first*
         # request to a paid route triggers one call to the facilitator's
         # /supported endpoint, confirming it actually backs the configured

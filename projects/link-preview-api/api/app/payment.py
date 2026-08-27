@@ -32,8 +32,20 @@ _EXAMPLE_OUTPUT = {
 }
 
 
+def _facilitator_config(settings: Settings) -> dict:
+    """Plain URL by default (x402.org, testnet-only, no auth). Once CDP_API_KEY_ID
+    and CDP_API_KEY_SECRET are both set (mainnet), switch to the CDP facilitator
+    with signed request auth - cdp-sdk builds the exact {url, create_headers}
+    shape HTTPFacilitatorClient expects, so there's nothing else to wire here."""
+    if settings.use_cdp_facilitator:
+        from cdp.x402 import create_facilitator_config
+
+        return create_facilitator_config(settings.cdp_api_key_id, settings.cdp_api_key_secret)
+    return {"url": settings.facilitator_url}
+
+
 def build_resource_server(settings: Settings) -> x402ResourceServer:
-    facilitator = HTTPFacilitatorClient({"url": settings.facilitator_url})
+    facilitator = HTTPFacilitatorClient(_facilitator_config(settings))
     server = x402ResourceServer(facilitator)
     server.register(settings.network, ExactEvmServerScheme())
     return server
