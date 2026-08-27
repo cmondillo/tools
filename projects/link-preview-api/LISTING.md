@@ -1,7 +1,8 @@
 # Marketplace listing — Link Preview API
 
-Copy-paste ready content for wherever this gets listed. Fill in
-`<DEPLOYED_URL>` once step 2 of the README's "Status" section is done.
+Copy-paste ready content for wherever this gets listed. Live at
+`https://link-preview-api-z4nf.onrender.com` (Base Sepolia testnet pricing
+until mainnet is switched on — see README §"Status").
 
 ## Where this actually gets listed, and how
 
@@ -45,7 +46,7 @@ $0.01 per call, paid in USDC, no signup.
 > price quote, pays $0.01 in USDC, and gets its answer in the same round
 > trip.
 
-**Endpoint:** `GET <DEPLOYED_URL>/preview?url=<public http(s) URL>`
+**Endpoint:** `GET https://link-preview-api-z4nf.onrender.com/preview?url=<public http(s) URL>`
 
 **Price:** $0.01 USD per successful call, settled in USDC
 
@@ -58,7 +59,7 @@ $0.01 per call, paid in USDC, no signup.
 
 **Example request:**
 ```
-GET <DEPLOYED_URL>/preview?url=https://example.com/blog/post
+GET https://link-preview-api-z4nf.onrender.com/preview?url=https://example.com/blog/post
 ```
 
 **Example response:**
@@ -76,6 +77,6 @@ GET <DEPLOYED_URL>/preview?url=https://example.com/blog/post
 }
 ```
 
-**Docs:** `<DEPLOYED_URL>/docs` (auto-generated OpenAPI/Swagger UI)
+**Docs:** `https://link-preview-api-z4nf.onrender.com/docs` (auto-generated OpenAPI/Swagger UI)
 
 **Source:** this repository

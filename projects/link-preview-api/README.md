@@ -123,24 +123,28 @@ create on your behalf:**
    `pay_to`. When you deploy (step 2), set the same value as an env var /
    secret on the host — it isn't in git, so it has to be set there
    separately.
-2. **Deploy it somewhere public.** `deploy/render.yaml` and `deploy/fly.toml`
-   are ready to use — pick one, connect your account, deploy, and set
-   `X402_PAY_TO_ADDRESS` to the address above in that host's dashboard. Any
-   Docker host works via `api/Dockerfile`.
+2. ~~Deploy it somewhere public.~~ **Done.** Live on Render's free tier:
+   **https://link-preview-api-z4nf.onrender.com** — verified working: `/`
+   correctly reports the real wallet as `pay_to`, `/healthz` is `ok`,
+   `/preview` correctly returns `402 Payment Required`. Deployed via
+   `deploy/render.yaml` (Blueprint path `projects/link-preview-api/deploy/render.yaml`).
+   On the free plan, so it spins down after 15 min idle — first request
+   after a quiet spell takes ~50s to wake up.
 3. **Switch to mainnet when ready.** `X402_NETWORK=eip155:8453` and a
-   mainnet-capable facilitator (the default `https://x402.org/facilitator`
+   mainnet-capable facilitator (the current `https://x402.org/facilitator`
    is testnet-only; for mainnet + automatic Bazaar listing, use
    [Coinbase's CDP facilitator](https://docs.cdp.coinbase.com/x402/core-concepts/facilitator),
    which needs a free CDP account and API key). The wallet from step 1
-   works unchanged on either network — nothing else to redo.
+   works unchanged on either network — nothing else to redo. **This is the
+   one remaining step between "live" and "actually earning money"** — right
+   now the API is real and reachable, but still priced in testnet USDC.
 4. **Get it in front of agents.** See `LISTING.md` for the ready-to-paste
-   listing copy and exactly where it goes.
+   listing copy, now filled in with the live URL.
 
-Until (2)-(3) are done, the API runs correctly against **Base Sepolia
-testnet** (fake money, safe to leave on) — that's the default, and it's
-what every test in this repo exercises. The configured wallet can already
-receive testnet USDC today if you want to see a real payment land before
-deploying anywhere.
+The API is live today on **Base Sepolia testnet** (fake money, safe to
+leave running) — that's the current setting, and what every test in this
+repo exercises. The configured wallet can already receive testnet USDC if
+you want to see a real payment land before tackling step 3.
 
 ## Note on this environment
 
