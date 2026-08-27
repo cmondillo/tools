@@ -125,10 +125,16 @@ Try the savings model: `cd potential && python simulate_savings.py`.
 
 1. **Build it.** Done — tested, working locally, same pattern as the other
    two projects.
-2. **Deploy it somewhere public.** Not done yet.
-3. **Switch to mainnet.** Not done yet.
+2. ~~Deploy it somewhere public.~~ **Done.** Live on Render's free tier:
+   **https://link-preview-cache-api.onrender.com**
+3. ~~Switch to mainnet.~~ **Done.** `X402_NETWORK=eip155:8453`, CDP
+   facilitator. Verified live: `GET /preview` shows a real Base mainnet
+   USDC payment page (no Sepolia/testnet mention).
 4. **Get it in front of agents.** See `LISTING.md` and the repo-root
-   `PUBLISHING.md` playbook once deployed.
+   `PUBLISHING.md` playbook — not done yet for this project.
 
-Same wallet as `link-preview-api`/`content-moderation-api` — no new CDP
-signup needed to go live on mainnet.
+Live on **Base mainnet today** — real money, same as the other two
+projects. Own CDP API key (a fresh one, created during this project's
+setup) rather than the shared one `link-preview-api`/`content-moderation-api`
+use — no functional difference, both work identically against the CDP
+facilitator.
