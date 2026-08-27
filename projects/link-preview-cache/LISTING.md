@@ -36,11 +36,10 @@ also available as an MCP tool (`preview_url`)
 
 ## Listed so far
 
-- **MCP Registry** — `server.json` written and schema-validated
-  (`io.github.cmondillo/link-preview-cache-api`, remote streamable-HTTP at
-  `/mcp`). Not published yet - needs `mcp-publisher publish` from a real
-  machine (device-code GitHub login already done for the other two
-  projects, so just the publish command this time).
+- **[MCP Registry](https://registry.modelcontextprotocol.io/)** — published,
+  `status: active`. `io.github.cmondillo/link-preview-cache-api`, remote
+  streamable-HTTP entry at `/mcp`. Verified via
+  `GET /v0.1/servers?search=io.github.cmondillo`.
 - **GitHub awesome-lists** — branches pushed, PRs not yet opened (needs
   the two-click submit from the compare links, same as before):
   - `xpaysh/awesome-x402`: https://github.com/xpaysh/awesome-x402/compare/main...cmondillo:awesome-x402:add-link-preview-cache-api
