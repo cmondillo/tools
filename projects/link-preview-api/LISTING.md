@@ -1,8 +1,7 @@
 # Marketplace listing — Link Preview API
 
 Copy-paste ready content for wherever this gets listed. Live at
-`https://link-preview-api-z4nf.onrender.com` (Base Sepolia testnet pricing
-until mainnet is switched on — see README §"Status").
+`https://link-preview-api-z4nf.onrender.com` on Base mainnet — real USDC.
 
 ## Where this actually gets listed, and how
 
@@ -28,6 +27,22 @@ yet — discovery happens in a few concrete places, in this order:
 There is deliberately no listing here on RapidAPI-style human marketplaces:
 they assume a human signs up for an API key and gets billed monthly, which
 is the opposite of the point of this project.
+
+## Listed so far
+
+- **[`xpaysh/awesome-x402`](https://github.com/xpaysh/awesome-x402)** —
+  submitted as [PR #1343](https://github.com/xpaysh/awesome-x402/pull/1343),
+  status: open, awaiting maintainer merge. Free, no wallet needed.
+- **x402 Bazaar (CDP auto-index)** — should be automatic since we're on the
+  CDP facilitator; not independently confirmed (every domain to check it is
+  blocked in the dev sandbox this project was built in — verify from a
+  normal browser).
+- **x402-list.com** — not submitted. Would cost a one-time $1 USDC because
+  the API is hosted on a free-tier host (onrender.com is on their listed
+  free-host set); revisit if/when off the free tier.
+- **x402bazaar.org manual listing** — attempted, blocked by a signature bug
+  on their own site (their platform-created wallet fails to sign even its
+  own listing flow); not something fixable from our side.
 
 ## Listing copy
 
