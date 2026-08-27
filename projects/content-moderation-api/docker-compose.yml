@@ -1,0 +1,8 @@
+# Local dev: `cp api/.env.example api/.env` then `docker compose up --build`.
+services:
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./api/.env

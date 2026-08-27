@@ -1,0 +1,10 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+httpx>=0.27
+python-dotenv>=1.0
+x402[fastapi,evm,extensions,mcp]>=0.4
+cdp-sdk>=1.48
+# x402's mcp extra targets the pre-rename FastMCP API (mcp.server.fastmcp.FastMCP).
+# mcp>=2.0 renamed that to MCPServer and broke the import - pin below 2 until
+# x402 itself updates (same finding as link-preview-api).
+mcp<2

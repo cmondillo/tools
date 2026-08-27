@@ -1,0 +1,26 @@
+# Fly.io. From the project root: `fly launch --config deploy/fly.toml --dockerfile api/Dockerfile`
+app = "content-moderation-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "api/Dockerfile"
+
+[env]
+  X402_PRICE_USD = "$0.005"
+  X402_NETWORK = "eip155:84532"
+  X402_FACILITATOR_URL = "https://x402.org/facilitator"
+  # X402_PAY_TO_ADDRESS is a secret, not an env var here:
+  # fly secrets set X402_PAY_TO_ADDRESS=0xYourRealWallet
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[http_service.checks]]
+  path = "/healthz"
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "10s"

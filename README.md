@@ -20,12 +20,17 @@ and follows the same pattern:
   so agents can find and call it without a human ever reading the docs.
 - A **sample automation client** included with every project, showing an
   agent discovering, paying for, and consuming the service end-to-end.
+- Where it adds real reach, also sold as an **MCP tool**
+  (`api/app/mcp_server.py`) — the same product, the same price, a second
+  interface for coding agents that discover tools over MCP rather than
+  raw HTTP.
 
 ## Projects
 
 | Project | What it sells | Status |
 |---|---|---|
 | [`link-preview-api`](projects/link-preview-api/) | Pay-per-call URL metadata (Open Graph/title/description/image) extraction | **Live on Base mainnet, earning real USDC**: https://link-preview-api-z4nf.onrender.com |
+| [`content-moderation-api`](projects/content-moderation-api/) | Pay-per-call profanity/explicit-content detection with redaction, sold over both HTTP and MCP | Built, tested (20/20), not yet deployed |
 
 ## Repo conventions
 
