@@ -50,8 +50,7 @@ $0.01 per call, paid in USDC, no signup.
 
 **Price:** $0.01 USD per successful call, settled in USDC
 
-**Network:** Base (mainnet: `eip155:8453` once live; testnet default:
-`eip155:84532`)
+**Network:** Base mainnet (`eip155:8453`)
 
 **Protocol:** [x402](https://www.x402.org/) — HTTP 402 Payment Required
 

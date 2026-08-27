@@ -25,7 +25,7 @@ and follows the same pattern:
 
 | Project | What it sells | Status |
 |---|---|---|
-| [`link-preview-api`](projects/link-preview-api/) | Pay-per-call URL metadata (Open Graph/title/description/image) extraction | **Live**: https://link-preview-api-z4nf.onrender.com (testnet pricing — mainnet switch is the one step left to earn real money) |
+| [`link-preview-api`](projects/link-preview-api/) | Pay-per-call URL metadata (Open Graph/title/description/image) extraction | **Live on Base mainnet, earning real USDC**: https://link-preview-api-z4nf.onrender.com |
 
 ## Repo conventions
 

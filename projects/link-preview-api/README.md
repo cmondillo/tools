@@ -130,21 +130,22 @@ create on your behalf:**
    `deploy/render.yaml` (Blueprint path `projects/link-preview-api/deploy/render.yaml`).
    On the free plan, so it spins down after 15 min idle — first request
    after a quiet spell takes ~50s to wake up.
-3. **Switch to mainnet when ready.** `X402_NETWORK=eip155:8453` and a
-   mainnet-capable facilitator (the current `https://x402.org/facilitator`
-   is testnet-only; for mainnet + automatic Bazaar listing, use
-   [Coinbase's CDP facilitator](https://docs.cdp.coinbase.com/x402/core-concepts/facilitator),
-   which needs a free CDP account and API key). The wallet from step 1
-   works unchanged on either network — nothing else to redo. **This is the
-   one remaining step between "live" and "actually earning money"** — right
-   now the API is real and reachable, but still priced in testnet USDC.
+3. ~~Switch to mainnet.~~ **Done.** `X402_NETWORK=eip155:8453`, and the
+   [Coinbase CDP facilitator](https://docs.cdp.coinbase.com/x402/core-concepts/facilitator)
+   is wired in via `CDP_API_KEY_ID`/`CDP_API_KEY_SECRET` (see `app/payment.py`).
+   Verified live: `GET /preview` now shows a real Base mainnet USDC payment
+   page (no Sepolia/testnet faucet mention), quoting the real USDC contract
+   at `0x7556A8772e508a8b63F8BBb4f9E6945De0017f4f`. **This API now charges
+   and can receive real money.**
 4. **Get it in front of agents.** See `LISTING.md` for the ready-to-paste
-   listing copy, now filled in with the live URL.
+   listing copy, filled in with the live URL. Using the CDP facilitator
+   also auto-lists `/preview` on the x402 Bazaar — worth checking there.
 
-The API is live today on **Base Sepolia testnet** (fake money, safe to
-leave running) — that's the current setting, and what every test in this
-repo exercises. The configured wallet can already receive testnet USDC if
-you want to see a real payment land before tackling step 3.
+The API is **live on Base mainnet today** — real USDC, real wallet, real
+facilitator. (Every automated test in this repo still runs against a mocked
+facilitator on testnet-shaped config, by design — that's what keeps the
+suite fast and independent of real money or network access; it's not a
+statement about what's actually deployed.)
 
 ## Note on this environment
 
