@@ -116,24 +116,31 @@ What turns this from a demo into something that earns money — **and is
 deliberately left to you, since it involves money and accounts I can't
 create on your behalf:**
 
-1. **A real payout wallet.** Set `X402_PAY_TO_ADDRESS` in `api/.env` (or
-   your host's env vars) to a Base-compatible address you control. Right
-   now it defaults to the Ethereum burn address, so nothing is wired to
-   anyone by default.
+1. ~~A real payout wallet.~~ **Done.** `X402_PAY_TO_ADDRESS` is set (in
+   `api/.env`, gitignored — never committed) to `0x7556A8772e508a8b63F8BBb4f9E6945De0017f4f`,
+   verified as a syntactically valid, EIP-55-checksummed address. Confirmed
+   live: `GET /` on a locally running server reports this exact address as
+   `pay_to`. When you deploy (step 2), set the same value as an env var /
+   secret on the host — it isn't in git, so it has to be set there
+   separately.
 2. **Deploy it somewhere public.** `deploy/render.yaml` and `deploy/fly.toml`
-   are ready to use — pick one, connect your account, deploy. Any Docker
-   host works via `api/Dockerfile`.
+   are ready to use — pick one, connect your account, deploy, and set
+   `X402_PAY_TO_ADDRESS` to the address above in that host's dashboard. Any
+   Docker host works via `api/Dockerfile`.
 3. **Switch to mainnet when ready.** `X402_NETWORK=eip155:8453` and a
    mainnet-capable facilitator (the default `https://x402.org/facilitator`
    is testnet-only; for mainnet + automatic Bazaar listing, use
    [Coinbase's CDP facilitator](https://docs.cdp.coinbase.com/x402/core-concepts/facilitator),
-   which needs a free CDP account and API key).
+   which needs a free CDP account and API key). The wallet from step 1
+   works unchanged on either network — nothing else to redo.
 4. **Get it in front of agents.** See `LISTING.md` for the ready-to-paste
    listing copy and exactly where it goes.
 
-Until (1)-(3) are done, the API runs correctly against **Base Sepolia
+Until (2)-(3) are done, the API runs correctly against **Base Sepolia
 testnet** (fake money, safe to leave on) — that's the default, and it's
-what every test in this repo exercises.
+what every test in this repo exercises. The configured wallet can already
+receive testnet USDC today if you want to see a real payment land before
+deploying anywhere.
 
 ## Note on this environment
 
