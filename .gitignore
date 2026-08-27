@@ -11,3 +11,7 @@ venv/
 node_modules/
 dist/
 build/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

@@ -1,0 +1,27 @@
+# Render Blueprint. In the Render dashboard: New -> Blueprint -> point at
+# this repo -> it finds this file automatically.
+# Blueprint path to enter in the dashboard: projects/link-preview-cache/deploy/render.yaml
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: link-preview-cache-api
+    runtime: docker
+    # Render resolves these two paths relative to the REPO ROOT, not to this
+    # render.yaml's own folder - hence the full path from the repo root here.
+    dockerfilePath: ./projects/link-preview-cache/api/Dockerfile
+    dockerContext: ./projects/link-preview-cache/api
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: X402_PAY_TO_ADDRESS
+        sync: false # set this in the Render dashboard to your real payout wallet
+      - key: X402_PRICE_USD
+        value: "$0.003"
+      - key: X402_NETWORK
+        value: eip155:84532 # switch to eip155:8453 (Base mainnet) to go live for real
+      - key: X402_FACILITATOR_URL
+        value: https://x402.org/facilitator
+      - key: CACHE_DB_PATH
+        value: ./data/cache.db
+      - key: CACHE_TTL_SECONDS
+        value: "21600"

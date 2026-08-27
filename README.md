@@ -31,6 +31,7 @@ and follows the same pattern:
 |---|---|---|
 | [`link-preview-api`](projects/link-preview-api/) | Pay-per-call URL metadata (Open Graph/title/description/image) extraction | **Live on Base mainnet, earning real USDC**: https://link-preview-api-z4nf.onrender.com |
 | [`content-moderation-api`](projects/content-moderation-api/) | Pay-per-call profanity/explicit-content detection with redaction, sold over both HTTP and MCP | **Live on Base mainnet, earning real USDC**: https://content-moderation-api-hhy1.onrender.com |
+| [`link-preview-cache-api`](projects/link-preview-cache/) | Same product as `link-preview-api`, ~⅓ the price — backed by a shared cache. First instance of a general "x402 cache" pattern | Built and tested, not deployed yet |
 
 ## Repo conventions
 
