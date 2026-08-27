@@ -1,8 +1,8 @@
 # Marketplace listing — Content Moderation API
 
 Copy-paste ready content for wherever this gets listed. Live at
-`https://content-moderation-api-hhy1.onrender.com` (Base Sepolia testnet
-pricing until mainnet is switched on — see README.md "Status").
+`https://content-moderation-api-hhy1.onrender.com` on Base mainnet — real
+USDC.
 
 ## Listing copy
 
@@ -27,8 +27,7 @@ version back. $0.005 per call, paid in USDC, no signup.
 
 **Price:** $0.005 USD per successful call, settled in USDC
 
-**Network:** Base Sepolia testnet currently (`eip155:84532`) — mainnet
-switch pending, see README.md "Status"
+**Network:** Base mainnet (`eip155:8453`)
 
 **Protocol:** [x402](https://www.x402.org/) — HTTP 402 Payment Required,
 also available as an MCP tool (`moderate_text`)

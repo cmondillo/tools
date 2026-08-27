@@ -102,14 +102,11 @@ real FastAPI app.
 ## Status
 
 1. ~~Deploy it somewhere public.~~ **Done.** Live on Render's free tier:
-   **https://content-moderation-api-hhy1.onrender.com** — verified: `/`
-   correctly reports the real wallet and price.
-2. **Switch to mainnet.** Same CDP account/API key as `link-preview-api` —
-   no new signup needed, CDP credentials aren't tied to one service. Add
-   `CDP_API_KEY_ID`/`CDP_API_KEY_SECRET` in Render, set
-   `X402_NETWORK=eip155:8453`.
+   **https://content-moderation-api-hhy1.onrender.com**
+2. ~~Switch to mainnet.~~ **Done.** Same CDP account/API key as
+   `link-preview-api` (no new signup needed), `X402_NETWORK=eip155:8453`.
+   Verified live on Base mainnet — real USDC, real wallet.
 3. **Get it in front of agents.** See `LISTING.md` and the repo-root
-   `PUBLISHING.md` playbook.
+   `PUBLISHING.md` playbook — not done yet for this project.
 
-Currently live on **Base Sepolia testnet** (fake money, safe default) —
-what every test in this repo exercises.
+Live on **Base mainnet today** — real money, same as `link-preview-api`.
