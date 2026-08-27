@@ -16,6 +16,15 @@ order, etc.) are treated as different cache entries and won't share a hit.
 That's an honest, stated scoping choice (like the wordlist's word-boundary
 matching in content-moderation-api) - not a bug, just not attempting
 canonicalization heuristics that could themselves introduce bugs.
+
+`pinned` entries never expire regardless of ttl_seconds. This matters for
+exactly one real case: an admin-seeded entry for a site that 403s any
+scraper (see main.py's /admin/cache). Without it, that entry would expire
+after CACHE_TTL_SECONDS like any normal fetch, and the next agent to ask
+about it would trigger a real fetch attempt that's guaranteed to fail -
+so a *paying* agent gets an error instead of the answer the admin entry
+was seeded to guarantee. Regular (non-admin) cache entries are never
+pinned - only set() callers that explicitly ask for it get this.
 """
 
 from __future__ import annotations
@@ -36,10 +45,15 @@ def _connect(db_path: str) -> sqlite3.Connection:
         CREATE TABLE IF NOT EXISTS previews (
             url TEXT PRIMARY KEY,
             data TEXT NOT NULL,
-            fetched_at REAL NOT NULL
+            fetched_at REAL NOT NULL,
+            pinned INTEGER NOT NULL DEFAULT 0
         )
         """
     )
+    try:  # migrate a pre-existing db (deployed before `pinned` existed)
+        conn.execute("ALTER TABLE previews ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass  # column already exists - the CREATE TABLE above already had it
     return conn
 
 
@@ -54,26 +68,27 @@ def _cursor(db_path: str):
 
 
 def get(db_path: str, url: str, *, ttl_seconds: float) -> dict | None:
-    """Return the cached preview dict for `url` if present and still fresh,
-    else None (either never cached, or expired)."""
+    """Return the cached preview dict for `url` if present and still fresh
+    (or pinned), else None (never cached, or expired and not pinned)."""
     with _cursor(db_path) as conn:
         row = conn.execute(
-            "SELECT data, fetched_at FROM previews WHERE url = ?", (url,)
+            "SELECT data, fetched_at, pinned FROM previews WHERE url = ?", (url,)
         ).fetchone()
     if row is None:
         return None
-    data_json, fetched_at = row
-    if time.time() - fetched_at > ttl_seconds:
+    data_json, fetched_at, pinned = row
+    if not pinned and (time.time() - fetched_at > ttl_seconds):
         return None
     return json.loads(data_json)
 
 
-def set(db_path: str, url: str, data: dict) -> None:
+def set(db_path: str, url: str, data: dict, *, pinned: bool = False) -> None:
     with _cursor(db_path) as conn:
         conn.execute(
-            "INSERT INTO previews (url, data, fetched_at) VALUES (?, ?, ?) "
-            "ON CONFLICT(url) DO UPDATE SET data = excluded.data, fetched_at = excluded.fetched_at",
-            (url, json.dumps(data), time.time()),
+            "INSERT INTO previews (url, data, fetched_at, pinned) VALUES (?, ?, ?, ?) "
+            "ON CONFLICT(url) DO UPDATE SET data = excluded.data, "
+            "fetched_at = excluded.fetched_at, pinned = excluded.pinned",
+            (url, json.dumps(data), time.time(), int(pinned)),
         )
 
 
@@ -90,4 +105,7 @@ def stats(db_path: str) -> dict:
     """Cheap visibility into cache size - used by the free /cache-stats route."""
     with _cursor(db_path) as conn:
         (count,) = conn.execute("SELECT COUNT(*) FROM previews").fetchone()
-    return {"cached_urls": count}
+        (pinned_count,) = conn.execute(
+            "SELECT COUNT(*) FROM previews WHERE pinned = 1"
+        ).fetchone()
+    return {"cached_urls": count, "pinned_urls": pinned_count}

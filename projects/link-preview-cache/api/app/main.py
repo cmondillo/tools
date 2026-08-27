@@ -43,6 +43,13 @@ class AdminCacheEntry(BaseModel):
     site_name: str | None = None
     canonical_url: str | None = None
     content_type: str | None = "text/html"
+    # Defaults True: the main reason to hand-seed an entry at all is a site
+    # that 403s any scraper (see README) - an unpinned entry there would
+    # just expire after CACHE_TTL_SECONDS and the next agent's request
+    # would trigger a real fetch attempt that's guaranteed to fail. Pass
+    # false explicitly for a one-off entry you actually want to expire
+    # normally.
+    pinned: bool = True
 
 
 def _check_admin_token(settings: Settings, authorization: str | None) -> None:
@@ -178,10 +185,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         entry: AdminCacheEntry, authorization: str | None = Header(default=None)
     ) -> dict:
         _check_admin_token(settings, authorization)
-        data = entry.model_dump(exclude={"url"})
+        # "pinned" is cache metadata, not a preview field - keep it out of
+        # the stored/returned data dict (agents hitting /preview should
+        # never see it).
+        data = entry.model_dump(exclude={"url", "pinned"})
         data["final_url"] = entry.url
-        cache.set(settings.cache_db_path, entry.url, data)
-        return {**data, "url": entry.url, "cached": True}
+        cache.set(settings.cache_db_path, entry.url, data, pinned=entry.pinned)
+        return {**data, "url": entry.url, "cached": True, "pinned": entry.pinned}
 
     @app.get("/admin/cache", tags=["admin"], include_in_schema=False)
     async def admin_get_cache(

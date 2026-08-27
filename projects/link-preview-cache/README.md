@@ -75,6 +75,39 @@ unset by default, which disables these routes entirely - a 503, not an
 open door). Hidden from `/docs`; not part of the public product surface.
 See `.env.example` for how to set one.
 
+Admin entries default to **pinned** (`"pinned": true`) - they ignore
+`CACHE_TTL_SECONDS` entirely and never expire on their own. This matters:
+without it, a manually-seeded Coinbase entry would silently expire after
+6h, and the next agent asking about it would trigger a real fetch attempt
+that's guaranteed to fail (403) - a *paying* agent getting an error is
+exactly the failure this feature exists to prevent. Pass `"pinned":
+false` explicitly if you actually want a one-off entry to expire
+normally. `/cache-stats` reports `pinned_urls` separately from the total,
+so a pinned entry going stale (e.g. a site's real title changes) is
+something you can notice, not something that silently self-heals.
+
+**Seeding more than one URL by hand is tedious one at a time** - and,
+more importantly, isn't really about volume: an entry nobody ever asks
+about doesn't help anyone, it just sits there. The two things actually
+worth seeding are (1) sites that block scraping entirely - has to be
+manual, and (2) a modest list of URLs you already expect agents to ask
+about, fetched for real once so the *first* agent doesn't eat the fetch
+latency. `admin-tools/seed_cache.py` does both from one JSON file - a
+bare `{"url": "..."}` gets fetched for real (via `preview.py` directly,
+bypassing payment - this runs as the operator); an entry with
+title/description already filled in is stored as-is (for the sites that
+can't be fetched at all). `admin-tools/starter_urls.json` has a starting
+set: the sites this project's own testing found actually block scrapers
+(Coinbase, Dexscreener, Binance), plus a short list of generally
+well-known sites.
+
+```
+cd admin-tools
+python seed_cache.py --input starter_urls.json \
+    --api https://link-preview-cache-api.onrender.com \
+    --admin-token $ADMIN_TOKEN
+```
+
 ## How it's sold: x402 (same mechanism as the other two projects)
 
 1. Agent calls `GET /preview?url=...` with no payment.
@@ -102,15 +135,20 @@ api/
     preview.py            fetch + parse a URL (SSRF-hardened; ported, not imported
                            cross-project, per this repo's self-containment convention)
     cache.py               the actual product idea: SQLite TTL cache in front of preview.py
-  tests/                 40 tests: cache logic, manual admin/cache seeding,
-                          preview parsing/SSRF, payment config, API-level,
-                          MCP-level, and one full mocked-facilitator
-                          integration test that proves the second call for
-                          the same URL hits cache (not a second fetch)
+  tests/                 44 tests: cache logic (incl. pinned entries and a
+                          pre-migration schema test), manual admin/cache
+                          seeding, preview parsing/SSRF, payment config,
+                          API-level, MCP-level, and one full mocked-
+                          facilitator integration test that proves the
+                          second call for the same URL hits cache
   Dockerfile
   .env.example
 automation-client/      sample agent that calls the SAME url twice, showing
                         cached:false then cached:true
+admin-tools/
+  seed_cache.py          bulk-seed /admin/cache from a JSON file
+  starter_urls.json      known-blocked sites (manual) + a short list of
+                          well-known ones (auto-fetched)
 deploy/                 Render + Fly.io configs
 potential/
   simulate_savings.py   the savings/hit-rate model behind the numbers above
@@ -134,7 +172,7 @@ uvicorn app.main:app --reload
 - `GET /preview?url=...` is the paid route.
 - MCP: `POST /mcp` on this same app, or standalone: `python -m app.mcp_server`.
 
-Run the tests: `cd api && pytest` — all 40 run fully offline (facilitator
+Run the tests: `cd api && pytest` — all 44 run fully offline (facilitator
 mocked with respx), including the full end-to-end test with a real (test)
 wallet really signing a real EIP-3009 payment authorization, that also
 proves the origin site gets fetched exactly once across two calls for the

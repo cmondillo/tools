@@ -1,0 +1,33 @@
+[
+  {
+    "url": "https://coinbase.com",
+    "title": "Coinbase",
+    "description": "Buy, sell, and manage cryptocurrency. One of the largest US crypto exchanges.",
+    "site_name": "Coinbase",
+    "pinned": true
+  },
+  {
+    "url": "https://dexscreener.com",
+    "title": "DEX Screener",
+    "description": "Real-time charts, price, and liquidity data for tokens across decentralized exchanges.",
+    "site_name": "Dexscreener",
+    "pinned": true
+  },
+  {
+    "url": "https://www.binance.com",
+    "title": "Binance",
+    "description": "Cryptocurrency exchange for trading Bitcoin, Ethereum, and hundreds of other tokens.",
+    "site_name": "Binance",
+    "pinned": true
+  },
+
+  { "url": "https://en.wikipedia.org/wiki/Main_Page" },
+  { "url": "https://github.com" },
+  { "url": "https://www.coingecko.com" },
+  { "url": "https://coinmarketcap.com" },
+  { "url": "https://www.reuters.com" },
+  { "url": "https://www.bbc.com/news" },
+  { "url": "https://techcrunch.com" },
+  { "url": "https://stackoverflow.com" },
+  { "url": "https://www.nytimes.com" }
+]
