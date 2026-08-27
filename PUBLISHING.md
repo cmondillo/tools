@@ -54,7 +54,34 @@ automation, not real automation. It's also genuinely fast by hand: open
 `https://www.x402scan.com/resources/register`, paste the URL, click "Add
 API." A few seconds, no wallet, no signature. Just do it each time.
 
-### 4. Community "awesome list" GitHub PRs — manual by design, not by limitation
+### 4. MCP Registry (`registry.modelcontextprotocol.io`) — mostly scripted, one manual login per machine
+
+The official MCP server directory (replaced the old README-list-of-links
+approach in `modelcontextprotocol/servers`). Requires the tool's MCP server
+to be reachable over the network, not just runnable as a local stdio
+process - see `app/mcp_server.py`'s `streamable_http_path="/"` +
+`transport_security` handling and `main.py`'s `/mcp` mount in
+`link-preview-api`/`content-moderation-api` for the pattern. Each project
+gets its own `server.json` at its root (`io.github.cmondillo/<slug>`
+namespace, `remotes` pointing at `<deployment-url>/mcp`).
+
+Publishing itself:
+
+```
+mcp-publisher validate   # from the project's own folder, next to server.json
+mcp-publisher login github   # one-time per machine - opens a device-code flow, needs a browser
+mcp-publisher publish
+```
+
+`validate` and `publish` are ordinary HTTP calls and can run from anywhere
+(including this session, which is how `server.json` gets checked before
+committing). `login` is the one step that can't be automated end-to-end: it's
+a generic GitHub OAuth device-code flow, not a repo-scoped git operation, so
+this session's GitHub proxy rejects it outright - it has to run from a
+real machine with a browser, once, and the resulting credential is reusable
+for future publishes/updates from that machine.
+
+### 5. Community "awesome list" GitHub PRs — manual by design, not by limitation
 
 `xpaysh/awesome-x402` and `Merit-Systems/awesome-agentic-commerce` both took
 a real PR (#1343 and #630 for `link-preview-api`). This one stays a light
@@ -83,7 +110,10 @@ about two minutes per list per tool, not a research project.
    paid route).
 3. Run `scripts/publish_x402list.py` for that tool's details.
 4. Two-minute manual step on x402scan.com.
-5. Ask for the awesome-list PRs — same repos as before, same format, just a
+5. Mount MCP at `/mcp` (see `content-moderation-api/api/app/main.py` for the
+   pattern), add a `server.json`, `mcp-publisher validate`, then a one-time
+   `mcp-publisher login github` + `publish` from a real machine.
+6. Ask for the awesome-list PRs — same repos as before, same format, just a
    new entry.
 
 ## Security note
